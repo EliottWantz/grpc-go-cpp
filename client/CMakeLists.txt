@@ -29,7 +29,7 @@ endif()
 
 
 # Proto file
-get_filename_component(echo_proto "./pb/echo.proto" ABSOLUTE)
+get_filename_component(echo_proto "../pb/echo.proto" ABSOLUTE)
 get_filename_component(echo_proto_path "${echo_proto}" PATH)
 
 # Generated sources
@@ -62,14 +62,14 @@ target_link_libraries(echo_grpc_proto
   ${_PROTOBUF_LIBPROTOBUF})
 
 
-# Targets echo_(client|server)
-# foreach(_target
-#   echo_client)
-#   add_executable(${_target}
-#     "${_target}.cc")
-#   target_link_libraries(${_target}
-#     echo_grpc_proto
-#     ${_REFLECTION}
-#     ${_GRPC_GRPCPP}
-#     ${_PROTOBUF_LIBPROTOBUF})
-# endforeach()
+# Targets echo_client
+foreach(_target
+  echo_client)
+  add_executable(${_target}
+    "${_target}.cc")
+  target_link_libraries(${_target}
+    echo_grpc_proto
+    ${_REFLECTION}
+    ${_GRPC_GRPCPP}
+    ${_PROTOBUF_LIBPROTOBUF})
+endforeach()

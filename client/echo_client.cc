@@ -41,6 +41,7 @@ public:
     {
         Request req;
         Response res;
+        std::cout << "Making Echo Request" << std::endl;
         req = MakeRequest("Ping");
     }
 

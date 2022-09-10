@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.4
-// source: pb/echo.proto
+// source: rpc/echo/service.proto
 
-package pb
+package echo
 
 import (
 	context "context"
@@ -101,5 +101,5 @@ var EchoService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "pb/echo.proto",
+	Metadata: "rpc/echo/service.proto",
 }

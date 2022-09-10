@@ -22,59 +22,52 @@ using grpc::ClientReaderWriter;
 using grpc::ClientWriter;
 using grpc::Status;
 
-Request MakeRequest(const std::string &message)
-{
-    Request r;
-    r.set_message(message);
-    return r;
-}
-
 class EchoClient
 {
 public:
+    std::unique_ptr<EchoService::Stub> stub_;
+
     EchoClient(std::shared_ptr<Channel> channel)
-        : stub_(EchoService::NewStub(channel))
+        : stub_(EchoService::NewStub(channel)) {}
+    // Assambles the client's payload, sends it and presents the response back
+    // from the server.
+    std::string Echo(const std::string &msg)
     {
-    }
-
-    void Echo()
-    {
-        Request req;
-        Response res;
-        std::cout << "Making Echo Request" << std::endl;
-        req = MakeRequest("Ping");
-    }
-
-private:
-    bool CallEcho(const Request &req, Response *res)
-    {
+        // Data we are sending to the server.
+        Request request;
+        request.set_message(msg);
+        // Container for the data we expect from the server.
+        Response reply;
+        // Context for the client. It could be used to convey extra information to
+        // the server and/or tweak certain RPC behaviors.
         ClientContext context;
-        Status status = stub_->Echo(&context, req, res);
-        if (!status.ok())
+        // The actual RPC.
+        Status status = stub_->Echo(&context, request, &reply);
+        // Act upon its status.
+        if (status.ok())
         {
-            std::cout << "GetFeature rpc failed." << std::endl;
-            return false;
-        }
-        if (res->message().empty())
-        {
-            std::cout << "Server did not respond." << std::endl;
+            return reply.message();
         }
         else
         {
-            std::cout << "Got response from server: " << res->message() << std::endl;
+            std::cout << status.error_code() << ": " << status.error_message()
+                      << std::endl;
+            return "RPC failed";
         }
-        return true;
     }
-
-    std::unique_ptr<EchoService::Stub> stub_;
 };
 
 int main(int argc, char **argv)
 {
-    EchoClient client(grpc::CreateChannel("localhost:8080", grpc::InsecureChannelCredentials()));
+    // Instantiate the client. It requires a channel, out of which the actual RPCs
+    // are created. This channel models a connection to an endpoint (in this case,
+    // localhost at port 50051). We indicate that the channel isn't authenticated
+    // (use of InsecureChannelCredentials()).
+    EchoClient greeter(grpc::CreateChannel(
+        "127.0.0.1:50051", grpc::InsecureChannelCredentials()));
 
-    std::cout << "-------------- Echo() --------------" << std::endl;
-    client.Echo();
-
+    // Making the Echo request
+    std::string reply = greeter.Echo("Ping");
+    std::cout << "Received: " << reply << std::endl;
     return 0;
 }

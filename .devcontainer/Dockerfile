@@ -17,7 +17,7 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 
 # [Optional] Uncomment this section to install additional vcpkg ports.
 RUN su vscode -c "${VCPKG_ROOT}/vcpkg install grpc"
-
+RUN ln -s /usr/local/vcpkg/installed/x64-linux/tools/protobuf/protoc /usr/bin
 # [Optional] Uncomment this section to install additional packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>

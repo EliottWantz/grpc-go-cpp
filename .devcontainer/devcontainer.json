@@ -22,14 +22,16 @@
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
 				"ms-vscode.cpptools",
-				"ms-vscode.cmake-tools"
+				"ms-vscode.cmake-tools",
+				"ms-azuretools.vscode-docker",
+				"zxh404.vscode-proto3"
 			]
 		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "gcc -v",
+	"postCreateCommand": "go install google.golang.org/protobuf/cmd/protoc-gen-go@latest && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest && export PATH=/go/bin:$PATH",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode",
 	"features": {

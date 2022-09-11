@@ -29,7 +29,7 @@ endif()
 
 
 # Proto file
-get_filename_component(echo_proto "../pb/echo.proto" ABSOLUTE)
+get_filename_component(echo_proto "../rpc/echo/service.proto" ABSOLUTE)
 get_filename_component(echo_proto_path "${echo_proto}" PATH)
 
 # Generated sources

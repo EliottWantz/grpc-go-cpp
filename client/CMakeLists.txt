@@ -29,46 +29,46 @@ endif()
 
 
 # Proto file
-get_filename_component(echo_proto "../rpc/echo/service.proto" ABSOLUTE)
-get_filename_component(echo_proto_path "${echo_proto}" PATH)
+get_filename_component(service_proto "../rpc/echo/service.proto" ABSOLUTE)
+get_filename_component(service_proto_path "${service_proto}" PATH)
 
 # Generated sources
-set(echo_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/echo.pb.cc")
-set(echo_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/echo.pb.h")
-set(echo_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/echo.grpc.pb.cc")
-set(echo_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/echo.grpc.pb.h")
+set(service_proto_srcs "${CMAKE_CURRENT_BINARY_DIR}/service.pb.cc")
+set(service_proto_hdrs "${CMAKE_CURRENT_BINARY_DIR}/service.pb.h")
+set(service_grpc_srcs "${CMAKE_CURRENT_BINARY_DIR}/service.grpc.pb.cc")
+set(service_grpc_hdrs "${CMAKE_CURRENT_BINARY_DIR}/service.grpc.pb.h")
 add_custom_command(
-      OUTPUT "${echo_proto_srcs}" "${echo_proto_hdrs}" "${echo_grpc_srcs}" "${echo_grpc_hdrs}"
+      OUTPUT "${service_proto_srcs}" "${service_proto_hdrs}" "${service_grpc_srcs}" "${service_grpc_hdrs}"
       COMMAND ${_PROTOBUF_PROTOC}
       ARGS --grpc_out "${CMAKE_CURRENT_BINARY_DIR}"
         --cpp_out "${CMAKE_CURRENT_BINARY_DIR}"
-        -I "${echo_proto_path}"
+        -I "${service_proto_path}"
         --plugin=protoc-gen-grpc="${_GRPC_CPP_PLUGIN_EXECUTABLE}"
-        "${echo_proto}"
-      DEPENDS "${echo_proto}")
+        "${service_proto}"
+      DEPENDS "${service_proto}")
 
 # Include generated *.pb.h files
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
-# echo_grpc_proto
-add_library(echo_grpc_proto
-  ${echo_grpc_srcs}
-  ${echo_grpc_hdrs}
-  ${echo_proto_srcs}
-  ${echo_proto_hdrs})
-target_link_libraries(echo_grpc_proto
+# service_grpc_proto
+add_library(service_grpc_proto
+  ${service_grpc_srcs}
+  ${service_grpc_hdrs}
+  ${service_proto_srcs}
+  ${service_proto_hdrs})
+target_link_libraries(service_grpc_proto
   ${_REFLECTION}
   ${_GRPC_GRPCPP}
   ${_PROTOBUF_LIBPROTOBUF})
 
 
-# Targets echo_client
+# Targets service_client
 foreach(_target
-  echo_client)
+  service_client)
   add_executable(${_target}
     "${_target}.cc")
   target_link_libraries(${_target}
-    echo_grpc_proto
+    service_grpc_proto
     ${_REFLECTION}
     ${_GRPC_GRPCPP}
     ${_PROTOBUF_LIBPROTOBUF})
